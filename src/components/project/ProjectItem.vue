@@ -2,14 +2,13 @@
   <div class="project-item" @click="showProject">
     <div class="project-item-title">
       <b>{{ project.title }}</b>
+      <small>{{ project.location }}</small>
+    </div>
+    <div class="project-state">
       <ProjectStateIndicator
         :state-string="project.totalState"
         :icon-only="true"
-        style="color: #888"
       ></ProjectStateIndicator>
-    </div>
-    <div class="project-item-location">
-      <small>{{ project.location }}</small>
     </div>
     <div class="projet-item-tags">
       <TagList :tag-list="project.tagList"></TagList>
@@ -19,9 +18,9 @@
 
 <script lang="ts">
 import { Component, Prop, Vue } from "vue-property-decorator";
-import { ProjectInterface } from "ApiInterfaces";
+import { ProjectInterface } from "@/@types/ApiInterfaces";
 import TagList from "@/components/TagList.vue";
-import ProjectStateIndicator from "@/components/ProjectStateIndicator.vue";
+import ProjectStateIndicator from "@/components/project/ProjectStateIndicator.vue";
 
 import router from "@/router";
 
@@ -49,6 +48,11 @@ export default class ProjectItem extends Vue {
   border-radius: 0.5rem;
   min-width: 20rem;
   box-shadow: 0 0 4px 0 rgba(200, 200, 200, 0.8);
+  margin: 1rem;
+  display: grid;
+  grid-template-rows: 3rem auto;
+  grid-template-columns: auto 4rem;
+  grid-template-areas: "title state" "details details";
 }
 
 .project-item:hover {
@@ -57,14 +61,21 @@ export default class ProjectItem extends Vue {
 }
 
 .project-item-title {
+  grid-area: title;
   color: #00b10f;
   font-size: 1.5rem;
   display: flex;
-  flex-direction: row;
-  justify-content: space-between;
+  flex-direction: column;
 }
 
-.project-item-location {
+.project-item-title small {
+  font-size: 0.8rem;
   color: #666;
+}
+
+.project-state {
+  grid-area: state;
+  display: flex;
+  justify-content: flex-end;
 }
 </style>

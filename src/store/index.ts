@@ -1,3 +1,5 @@
+import { TaskInterface } from "@/@types/ApiInterfaces";
+import { Toast } from "@/plugin/toast/ToastPlugin";
 import Vue from "vue";
 import Vuex from "vuex";
 
@@ -16,7 +18,9 @@ export default new Vuex.Store({
     user: {
       id: ""
     },
-    userNameList: {} as UserNameList
+    userNameList: {} as UserNameList,
+    toastList: [] as Toast[],
+    taskList: [] as TaskInterface[]
   },
   mutations: {
     userLogin(state, payload) {
@@ -30,6 +34,13 @@ export default new Vuex.Store({
     },
     setUserNameList(state, payload) {
       state.userNameList = payload;
+    },
+    toastAdd(state, payload: { toastData: Toast }) {
+      state.toastList.push(payload.toastData);
+    },
+    toastRemove(state, payload) {
+      state.toastList.splice(payload.index, 1);
+      console.log(payload, state.toastList);
     }
   },
   actions: {},
@@ -46,8 +57,14 @@ export default new Vuex.Store({
     userLoginName: (state) => (id: string) => {
       return state.userNameList[id].loginName;
     },
+    userNameList: (state) => {
+      return state.userNameList;
+    },
     userDisplayName: (state) => (id: string) => {
       return state.userNameList[id].displayName;
+    },
+    toastList: (state) => {
+      return state.toastList;
     }
   }
 });

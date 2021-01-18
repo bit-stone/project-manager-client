@@ -36,9 +36,9 @@
       <div class="loading"></div>
     </div>
     <div class="data-panel-line" style="padding-top: 0.5rem;" v-show="!loading">
-      <span style="color: #ccc;" v-show="noteList.length === 0"
-        >Keine Notizen vorhanden</span
-      >
+      <span style="color: #ccc;" v-show="noteList.length === 0">
+        Keine Notizen vorhanden
+      </span>
       <div class="note-item" v-for="noteItem in noteList" :key="noteItem._id">
         <div class="note-item-content">
           <div class="note-item-message">{{ noteItem.message }}</div>
@@ -63,7 +63,7 @@
 
 <script lang="ts">
 import { Component, Prop, Vue } from "vue-property-decorator";
-import { NoteInterface } from "ApiInterfaces";
+import { NoteInterface } from "@/@types/ApiInterfaces";
 import store from "@/store";
 
 @Component({})
@@ -105,6 +105,10 @@ export default class NoteList extends Vue {
 
   toggleShowAddNote() {
     this.showAddNote = !this.showAddNote;
+
+    if (this.showAddNote === false) {
+      this.newNoteMessage = "";
+    }
   }
 
   /**
@@ -112,7 +116,7 @@ export default class NoteList extends Vue {
    */
   async fetchData() {
     this.loading = true;
-    const noteResponse = await Vue.$apiCall(
+    const noteResponse = await Vue.apiCall(
       "/api/note/" + this.refType + "/" + this.refId
     );
     if (noteResponse.success === true) {
@@ -125,7 +129,7 @@ export default class NoteList extends Vue {
    * Neue Notiz hochladen und speichern
    */
   async saveNote() {
-    const response = await Vue.$apiCall("/api/note/add", "POST", {
+    const response = await Vue.apiCall("/api/note/add", "POST", {
       refType: this.refType,
       refId: this.refId,
       message: this.newNoteMessage
@@ -137,14 +141,14 @@ export default class NoteList extends Vue {
     }
   }
 
-  async deleteNote(data: any) {
+  async deleteNote(data: NoteInterface) {
     const cont = confirm("Wollen Sie diese Notiz wirklich löschen?");
     if (!cont) {
       return;
     }
 
     const noteId = data._id;
-    const response = await Vue.$apiCall("/api/note/remove", "POST", {
+    const response = await Vue.apiCall("/api/note/remove", "POST", {
       noteId
     });
     if (response.success === true) {

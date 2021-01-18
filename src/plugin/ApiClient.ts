@@ -1,15 +1,16 @@
-import Vue from "vue";
-import { ApiClientInterface } from "ApiClient";
+import Vue, { PluginFunction } from "vue";
 import { VueConstructor } from "vue/types/umd";
 import router from "@/router";
 import store from "@/store";
 
-class ApiClient implements ApiClientInterface {
-  vueInstance!: VueConstructor<Vue>;
+interface ApiClientInterface {
+  install: PluginFunction<{}>;
+  apiCall: (url: string, method?: string, data?: any) => any;
+}
 
-  install(instance: VueConstructor<Vue>, options?: any) {
-    this.vueInstance = instance;
-    instance.$apiCall = this.apiCall;
+class ApiClient implements ApiClientInterface {
+  install(instance: VueConstructor<Vue>) {
+    instance.apiCall = this.apiCall;
   }
 
   async apiCall(url: string, method?: string, data?: any) {
@@ -36,6 +37,10 @@ class ApiClient implements ApiClientInterface {
         store.commit("userLogout");
         if (router.currentRoute.path != "/login") {
           router.push("/login");
+          return {
+            success: false,
+            message: "Login-Fehler"
+          };
         }
       } else {
         return responseData;

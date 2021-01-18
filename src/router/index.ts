@@ -22,12 +22,26 @@ const routes: Array<RouteConfig> = [
   {
     path: "/project",
     name: "Project",
-    component: () => import("../views/project/Project.vue")
+    component: () => import("../views/project/ProjectList.vue")
+  },
+  {
+    path: "/project/edit",
+    redirect: "/project/edit/0"
+  },
+  {
+    path: "/project/edit/:projectId",
+    name: "ProjectEdit",
+    component: () => import("../views/project/ProjectEdit.vue")
   },
   {
     path: "/project/:projectId",
     name: "ProjectShow",
     component: () => import("../views/project/ProjectShow.vue")
+  },
+  {
+    path: "/task",
+    name: "TaskList",
+    component: () => import("../views/TaskList.vue")
   }
 ];
 

@@ -7,7 +7,7 @@
 
       <router-link to="/dashboard" class="main-nav-item">
         <i class="material-icons-round">dashboard</i>
-        <small>Übersicht</small>
+        <small>Dashboard</small>
       </router-link>
 
       <router-link to="/project" class="main-nav-item">
@@ -16,8 +16,18 @@
       </router-link>
 
       <router-link to="/task" class="main-nav-item">
-        <i class="material-icons-round">assignment_turned_in</i>
+        <i class="material-icons-round">add_task</i>
         <small>Aufgaben</small>
+      </router-link>
+
+      <router-link to="/document" class="main-nav-item">
+        <i class="material-icons-round">assignment</i>
+        <small>Dokumente</small>
+      </router-link>
+
+      <router-link to="/media" class="main-nav-item">
+        <i class="material-icons-round">perm_media</i>
+        <small>Medien</small>
       </router-link>
 
       <router-link to="/tools" class="main-nav-item">
@@ -25,10 +35,10 @@
         <small>Tools</small>
       </router-link>
 
-      <router-link to="/archive" class="main-nav-item">
+      <!-- <router-link to="/archive" class="main-nav-item">
         <i class="material-icons-round">archive</i>
         <small>Archiv</small>
-      </router-link>
+      </router-link> -->
 
       <a
         href="#"
@@ -48,6 +58,8 @@
     <div id="main-user">
       <UserSideBar></UserSideBar>
     </div>
+
+    <Toast></Toast>
   </div>
 </template>
 
@@ -65,7 +77,7 @@ import store from "./store";
 export default class App extends Vue {
   async mounted() {
     try {
-      const response = await Vue.$apiCall("/auth/ping");
+      const response = await Vue.apiCall("/auth/ping");
       if (response.success === true) {
         store.commit("userLogin", { id: response.data.userId });
         store.commit("setUserNameList", response.data.userNameList);
@@ -81,7 +93,7 @@ export default class App extends Vue {
   }
 
   async logoutRequest() {
-    const response = await Vue.$apiCall("/auth/logout", "POST");
+    const response = await Vue.apiCall("/auth/logout", "POST");
     if (response.success === true) {
       store.commit("userLogout");
       router.push("/login");
@@ -142,6 +154,11 @@ select {
 
 a {
   text-decoration: none;
+}
+
+textarea {
+  resize: none;
+  border: 1px solid #ccc;
 }
 
 .main-nav-item {
@@ -248,7 +265,7 @@ button:hover {
 .data-panel {
   border: 2px solid #ccc;
   box-shadow: 0 0 4px rgba(200, 200, 200, 0.8);
-  border-radius: 1rem;
+  /* border-radius: 1rem; */
   padding: 0.5rem;
   background: white;
   margin-bottom: 1rem;
@@ -259,6 +276,19 @@ button:hover {
   display: flex;
   flex-direction: row;
   justify-content: space-between;
+}
+
+.data-panel-action-line {
+  display: flex;
+  flex-direction: row;
+  justify-content: space-between;
+  align-items: flex-start;
+}
+
+.data-panel-action-line span {
+  color: #888;
+  font-size: 0.8rem;
+  max-width: 60%;
 }
 
 .data-panel-header {

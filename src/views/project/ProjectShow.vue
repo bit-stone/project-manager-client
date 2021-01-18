@@ -6,21 +6,24 @@
       <div id="project-show-left">
         <div class="data-panel">
           <div class="data-panel-header">
-            <div class="data-panel-title">{{ projectData.title }}</div>
+            <div class="data-panel-title" style="color: #ccc; height: 2rem;">
+              <ProjectStateIndicator
+                :state-string="projectData.totalState"
+                :icon-only="false"
+              ></ProjectStateIndicator>
+            </div>
             <div class="data-panel-side-title">
-              <button type="button">
+              <button type="button" @click="showEditPage">
                 <i class="material-icons-round">create</i>
                 Bearbeiten
               </button>
             </div>
           </div>
-          <div class="data-panel-sub-title">{{ projectData.location }}</div>
-          <div class="data-panel-sub-title">
-            <ProjectStateIndicator
-              :state-string="projectData.totalState"
-              :icon-only="false"
-            ></ProjectStateIndicator>
+          <div class="data-panel-title" style="margin-top: 1rem;">
+            {{ projectData.title }}
           </div>
+          <div class="data-panel-sub-title">{{ projectData.location }}</div>
+          <div class="data-panel-sub-title"></div>
           <div class="data-panel-divider"></div>
           <div class="data-panel-line">
             <TagList :tag-list="projectData.tagList"></TagList>
@@ -35,17 +38,20 @@
 
         <NoteList :refType="'project'" :refId="projectData._id"></NoteList>
       </div>
-      <div id="project-show-right"></div>
+      <div id="project-show-right">
+        <TaskList :refId="projectData._id" :refType="'project'"></TaskList>
+      </div>
     </div>
   </div>
 </template>
 
 <script lang="ts">
 import { Component, Vue } from "vue-property-decorator";
-import { ProjectInterface } from "ApiInterfaces";
+import { ProjectInterface } from "@/@types/ApiInterfaces";
 import TagList from "@/components/TagList.vue";
 import NoteList from "@/components/NoteList.vue";
-import ProjectStateIndicator from "@/components/ProjectStateIndicator.vue";
+import ProjectStateIndicator from "@/components/project/ProjectStateIndicator.vue";
+import TaskList from "@/components/task/TaskItemList.vue";
 
 @Component({
   watch: {
@@ -54,15 +60,20 @@ import ProjectStateIndicator from "@/components/ProjectStateIndicator.vue";
   components: {
     TagList,
     ProjectStateIndicator,
-    NoteList
+    NoteList,
+    TaskList
   }
 })
 export default class Project extends Vue {
-  loading = false;
+  loading = true;
   projectData!: ProjectInterface;
 
   created() {
     this.fetchData();
+  }
+
+  showEditPage() {
+    this.$router.push("/project/edit/" + this.$route.params.projectId);
   }
 
   /**
@@ -72,7 +83,7 @@ export default class Project extends Vue {
     this.loading = true;
     const projectId: string = this.$route.params.projectId;
     if (projectId.length) {
-      const response = await Vue.$apiCall("/api/project/" + projectId);
+      const response = await Vue.apiCall("/api/project/" + projectId);
       if (response.success === true) {
         this.projectData = response.data.projectData;
         this.loading = false;

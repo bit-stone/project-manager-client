@@ -57,4 +57,11 @@ export default class UserSideBar extends Vue {
   height: 0.5rem;
   margin-bottom: 0.5rem;
 }
+
+.login-required {
+  color: #ccc;
+  margin: auto;
+  margin-top: 4rem;
+  text-align: center;
+}
 </style>

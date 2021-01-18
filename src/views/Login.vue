@@ -33,12 +33,13 @@ export default class Login extends Vue {
   state = "";
 
   async requestLogin() {
-    const response = await Vue.$apiCall("/auth/login", "POST", {
+    const response = await Vue.apiCall("/auth/login", "POST", {
       loginName: this.loginName,
       password: this.password
     });
     if (response.success === true) {
-      store.commit("userLogin", response.data.user);
+      store.commit("userLogin", { id: response.data.userId });
+      store.commit("setUserNameList", response.data.userNameList);
       router.push("/dashboard");
     } else {
       this.state = response.message;
